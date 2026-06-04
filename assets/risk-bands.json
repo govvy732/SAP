@@ -1,0 +1,46 @@
+{
+  "_comment": "HHI bands and recommended actions. Edit with care — these drive the diversification narrative.",
+  "bands": [
+    {
+      "name": "diversified",
+      "hhi_min": 0,
+      "hhi_max": 1500,
+      "score_min": 85,
+      "score_max": 100,
+      "action": "Hold; consider rebalancing only for thesis changes"
+    },
+    {
+      "name": "balanced",
+      "hhi_min": 1500,
+      "hhi_max": 2500,
+      "score_min": 75,
+      "score_max": 85,
+      "action": "Monitor; small rebalances are fine"
+    },
+    {
+      "name": "concentrated",
+      "hhi_min": 2500,
+      "hhi_max": 4999,
+      "score_min": 50,
+      "score_max": 75,
+      "action": "Consider trimming the top holding"
+    },
+    {
+      "name": "highly_concentrated",
+      "hhi_min": 5000,
+      "hhi_max": 7500,
+      "score_min": 25,
+      "score_max": 50,
+      "action": "Strong rebalance recommended"
+    },
+    {
+      "name": "single_asset",
+      "hhi_min": 7500,
+      "hhi_max": 10000,
+      "score_min": 0,
+      "score_max": 25,
+      "action": "Critical concentration; immediate rebalance recommended"
+    }
+  ],
+  "stablecoin_pattern": "USDC|USDT|DAI|FRAX|USDC.e|USDT.e|USD[CT]|BUSD|TUSD"
+}

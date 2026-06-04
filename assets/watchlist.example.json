@@ -1,0 +1,24 @@
+{
+  "label": "Example watchlist — copy to assets/watchlist.json and edit",
+  "updated_at": "2026-06-04T16:00:00Z",
+  "items": [
+    {
+      "address": "0xE0BE08c77f415F577A1B3A9aD7a1Df1479564ec8",
+      "symbol_hint": "USDC",
+      "kind": "erc20",
+      "notes": "Stablecoin allocation"
+    },
+    {
+      "address": "0xE7E84B8B4f39C507499c40B4ac199B050e2882d5",
+      "symbol_hint": "USDT",
+      "kind": "erc20",
+      "notes": "Stablecoin allocation"
+    },
+    {
+      "address": "0x7d211F77525ea39A0592794f793cC1036eEaccD5",
+      "symbol_hint": "WETH",
+      "kind": "erc20",
+      "notes": "ETH exposure"
+    }
+  ]
+}

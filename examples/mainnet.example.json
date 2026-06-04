@@ -1,0 +1,56 @@
+{
+  "_comment": "Example report artifact produced by SAP for a fictional Pharos mainnet wallet. Used to demonstrate the JSON schema; the numbers are illustrative only.",
+  "network": "mainnet",
+  "address": "0x0000000000000000000000000000000000000abc",
+  "generated_at": "2026-06-04T17:00:00Z",
+  "native": {
+    "symbol": "PROS",
+    "wei": "1234500000000000000",
+    "ether": "1.2345"
+  },
+  "erc20": [
+    {
+      "address": "0xc879c018db60520f4355c26ed1a6d572cdac1815",
+      "symbol": "USDC",
+      "decimals": 6,
+      "raw_balance": "1000000000",
+      "balance": "1000",
+      "source": "known",
+      "suspicious": []
+    },
+    {
+      "address": "0x1f4b7011Ee3d53969bb67F59428a9ec0477856E9",
+      "symbol": "WETH",
+      "decimals": 18,
+      "raw_balance": "250000000000000000",
+      "balance": "0.25",
+      "source": "known",
+      "suspicious": []
+    }
+  ],
+  "erc721": [],
+  "risk": {
+    "hhi": 8000,
+    "top1_share_pct": 80.0,
+    "top3_share_pct": 100.0,
+    "diversification_score": 20,
+    "band": "single_asset"
+  },
+  "watchlist_diff": {
+    "in": [
+      {"address": "0xc879c018db60520f4355c26ed1a6d572cdac1815", "symbol": "USDC"}
+    ],
+    "out": [
+      {"address": "0x51e2A24742Db77604B881d6781Ee16B5b8fcBE29", "symbol_hint": "LINK"}
+    ],
+    "moved": []
+  },
+  "suspicious": [],
+  "explorer_links": {
+    "wallet": "https://www.pharosscan.xyz/address/0x0000000000000000000000000000000000000abc",
+    "holdings": [
+      "https://www.pharosscan.xyz/address/0xc879c018db60520f4355c26ed1a6d572cdac1815",
+      "https://www.pharosscan.xyz/address/0x1f4b7011Ee3d53969bb67F59428a9ec0477856E9"
+    ]
+  }
+}
