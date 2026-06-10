@@ -1,17 +1,6 @@
 ---
 name: spn-architect-pro
-description: >
-  Smart Portfolio Navigator & Architect Pro (SAP). Use this skill whenever the user wants a
-  complete, professional-grade portfolio snapshot, NFT holdings audit, risk & diversification score,
-  watchlist tracking, PnL baseline, or CSV/JSON export for a Pharos wallet. Primary network is
-  Pharos mainnet (PROS, chain id 1672); Pharos Atlantic testnet (PHRS, chain id 688689) is
-  supported as a secondary target. Goes beyond raw balance queries: combines native + ERC20 + ERC721
-  holdings, computes concentration metrics, flags suspicious or non-standard tokens, and produces
-  shareable reports. Invoke when the user mentions "portfolio", "wallet summary", "asset overview",
-  "holdings report", "PnL", "watchlist", "diversification", "NFT audit", "risk score",
-  "export wallet", or asks for a holistic view of a Pharos address. Do NOT use for single-token
-  balance queries, transaction sending, contract deployment, or contract verification — those
-  belong to pharos-skill-engine.
+description: Smart Portfolio Navigator & Architect Pro (SAP). Use this skill whenever the user wants a complete, professional-grade portfolio snapshot, NFT holdings audit, risk & diversification score, watchlist tracking, PnL baseline, or CSV/JSON export for a Pharos wallet. Primary network is Pharos mainnet (PROS, chain id 1672); Pharos Atlantic testnet (PHRS, chain id 688689) is supported as a secondary target. Goes beyond raw balance queries: combines native + ERC20 + ERC721 holdings, computes concentration metrics, flags suspicious or non-standard tokens, and produces shareable reports. Invoke when the user mentions "portfolio", "wallet summary", "asset overview", "holdings report", "PnL", "watchlist", "diversification", "NFT audit", "risk score", "export wallet", or asks for a holistic view of a Pharos address. Do NOT use for single-token balance queries, transaction sending, contract deployment, or contract verification — those belong to pharos-skill-engine.
 version: 0.1.0
 license: MIT-0
 requires:
@@ -19,52 +8,58 @@ requires:
     - cast
     - python3
 ---
+
 # SPN Architect Pro (SAP) — Smart Portfolio Navigator for Pharos
 
-Build, score, and export a complete portfolio snapshot for any Pharos wallet. SAP layers on top of
-`pharos-skill-engine`: it consumes the network config and token list that engine exposes, then adds
-NFT holdings, concentration risk metrics, watchlist tracking, baseline PnL (cost basis optional),
-suspicious-token detection, and clean CSV / JSON / Markdown export.
+Build, score, and export a complete portfolio snapshot for any Pharos wallet. SAP can optionally
+layer on top of `pharos-skill-engine` for an upstream token list and network registry, but it ships
+bundled `assets/networks.json` and `assets/tokens.json` so it runs standalone.
 
 ## Prerequisites
 
-1. **Pharos Skill Engine installed and read first.** This skill **depends on** `pharos-skill-engine`
-   for network config (`assets/networks.json`) and the known token list (`assets/tokens.json`). If
-   the user has not loaded `pharos-skill-engine`, load it before doing anything else. SAP also
-   depends on `cast` and `python3` being installed.
-
-2. **Foundry installed** (the engine skill handles installation). Verify:
+1. **Foundry installed** (provides `cast`). If not already installed:
    ```bash
-   cast --version
-   python3 --version
+   curl -L https://foundry.paradigm.xyz | bash
+   source ~/.bashrc   # or ~/.zshrc, or open a new terminal
+   foundryup
    ```
 
-3. **No private key required for read-only operations.** SAP is read-only by default — it never
-   needs a private key. If the user later wants to add an "import cost basis from a signed message"
-   flow, that will be a future extension.
+2. **Python 3.10+** available as `python3` on the PATH. On Termux, `pkg install python` works and
+   recent versions expose `python3` as well. If your platform only has `python`, the script's
+   shebang will resolve it; or invoke the script with `python scripts/portfolio.py ...`.
+
+3. **No private key required.** SAP is read-only by default. If a user volunteers a private key,
+   refuse for SAP purposes and direct them to `pharos-skill-engine` for write operations.
+
+Verify both binaries:
+
+```
+cast --version
+python3 --version
+```
 
 ## What SAP Produces
 
 When invoked, SAP generates a single Markdown report containing:
 
 | Section | Source | Notes |
-|---------|--------|-------|
-| Header & target network | `assets/networks.json` | Network name, RPC, explorer |
+| --- | --- | --- |
+| Header & target network | `assets/networks.json` (or pharos-skill-engine if present) | Network name, RPC, explorer |
 | Native balance | `cast balance` | PHRS / PROS depending on network |
 | ERC20 holdings (known) | `cast call balanceOf` per token in `assets/tokens.json` | Skips zero balances |
 | ERC20 holdings (user-supplied) | `cast call balanceOf` per address | Optional, de-duped |
 | ERC721 holdings (optional) | `cast call balanceOf` against a user-provided NFT contract list | Optional |
-| Total estimated value | Computed in-script | Sum of native (in PHRS units); ERC20 USD valuation is out of scope by default |
+| Total estimated value | Computed in-script | Sum of native (in PHRS/PROS units); ERC20 USD valuation is out of scope by default |
 | Concentration risk (HHI) | Computed in-script | Herfindahl-Hirschman Index on known ERC20 weights |
 | Top holdings concentration | Computed in-script | Top-1 and Top-3 cumulative share |
 | Watchlist diff | `assets/watchlist.json` (user-editable) | Mark IN / OUT / MOVED |
 | Suspicious-token flags | Heuristics on contract | Non-standard decimals, empty symbol, no code |
-| Export artifacts | `reports/<address>_<timestamp>.{csv,json,md}` | Written to current working directory |
+| Export artifacts | `reports/<address>_<timestamp>.{csv,json,md}` | Written to `--out-dir` |
 
 ## Capability Index
 
 | User Need | Capability | Detailed Instructions |
-|-----------|------------|----------------------|
+| --- | --- | --- |
 | Generate a full portfolio report (Markdown + CSV + JSON) | `portfolio` | → `references/portfolio.md` |
 | Add custom ERC20 / ERC721 contracts to the scan | `custom-contracts` | → `references/portfolio.md#custom-contracts` |
 | Maintain a watchlist and diff it against current holdings | `watchlist` | → `references/watchlist.md` |
@@ -74,8 +69,8 @@ When invoked, SAP generates a single Markdown report containing:
 
 ## Quick Start (Agent Flow)
 
-1. **Load `pharos-skill-engine` first.** Read `assets/networks.json` and `assets/tokens.json` from
-   that skill.
+1. **Check that pharos-skill-engine is present.** If yes, prefer its `networks.json` and `tokens.json`.
+   If not, fall back to the bundled files in `assets/`. The script handles both cases.
 2. **Resolve target network.** Default = `mainnet` (Pharos mainnet, native `PROS`). If user says
    "testnet" or "PHRS", switch to `atlantic-testnet`.
 3. **Ask the user for the wallet address** if not provided. Validate `0x` + 40 hex.
@@ -92,6 +87,7 @@ When invoked, SAP generates a single Markdown report containing:
 
 - **Inline:** A formatted Markdown table in chat, no truncation.
 - **On disk (optional):** Three files in the working directory:
+
   - `reports/<address>_<timestamp>.md` — full Markdown report
   - `reports/<address>_<timestamp>.csv` — flat tabular export, one row per holding
   - `reports/<address>_<timestamp>.json` — machine-readable report
@@ -100,9 +96,10 @@ When invoked, SAP generates a single Markdown report containing:
 
 - **Read-only by design.** SAP never asks for or uses a private key. If a user volunteers one,
   refuse for SAP purposes and direct them to `pharos-skill-engine` for write operations.
-- **No external HTTP for token prices.** SAP intentionally does not call CoinGecko or any
-  third-party API. USD valuation is opt-in and disabled by default. This keeps the skill
-  deterministic and safe to run offline.
+- **No external HTTP from the script.** The script uses the local `cast` CLI to read on-chain data
+  and does not call CoinGecko, GoPlus, TokenSniffer, or any other third-party API. The bundled
+  Lovable demo (spnsap.lovable.app) routes the RPC through a proxy for browser compatibility, but
+  the **script** is fully offline-capable. USD valuation is opt-in and disabled by default.
 - **No web scraping of the block explorer.** If a token is not in `assets/tokens.json` AND the
   user has not provided a contract address, direct them to `<explorerUrl>/tokens` to look it up
   themselves — the explorer has bot checks that block automated access.
@@ -127,8 +124,8 @@ If the user replies "testnet" or "PHRS" at any point, switch the network and re-
 ## Error Handling (SAP-Specific)
 
 | Error Scenario | CLI Error Signature | Handling |
-|----------------|---------------------|----------|
-| `pharos-skill-engine` not loaded | Network/token config files missing | Prompt user to load the engine skill first, then re-run |
+| --- | --- | --- |
+| `pharos-skill-engine` not loaded | Network/token config files missing | Fall back to bundled `assets/*.json`, warn in report footer |
 | User address fails regex | `invalid address` | Prompt for `0x` + 40 hex format |
 | Custom contract has no code | empty `cast call` result | Mark contract as "no code" in report, skip its balance |
 | Custom contract reverts on `decimals()` | `execution reverted` | Flag as non-standard ERC20, include in suspicious list |
@@ -157,5 +154,7 @@ If the user replies "testnet" or "PHRS" at any point, switch the network and re-
 - `assets/watchlist.example.json` — example watchlist (copy to `assets/watchlist.json` to use)
 - `assets/risk-bands.json` — HHI bands and recommended actions
 - `assets/symbol-overrides.json` — manual symbol/decimals overrides for non-standard tokens
-- `scripts/portfolio.py` — the orchestrator script
+- `assets/networks.json` — bundled network config (used if pharos-skill-engine is not present)
+- `assets/tokens.json` — bundled known token list (used if pharos-skill-engine is not present)
 - `assets/templates/portfolio.md.tpl` — Markdown report template
+- `scripts/portfolio.py` — the orchestrator script
