@@ -81,8 +81,8 @@ brew install python
 # Debian / Ubuntu / WSL
 sudo apt update && sudo apt install -y python3 python3-pip
 
-# Termux on Android
-pkg install python -y
+# Termux on Android (fresh install — git and curl are not pre-installed)
+pkg install python git curl -y
 ```
 
 > **Termux note:** `pkg install python` exposes the binary as `python` and (in recent Termux versions) also as `python3`. The script's shebang is `#!/usr/bin/env python3`. If `python3` is missing on your system, run `ln -s $(which python) ~/../usr/bin/python3` (Termux fix) or just call the script with `python scripts/portfolio.py ...` instead of `python3 scripts/portfolio.py ...`.
