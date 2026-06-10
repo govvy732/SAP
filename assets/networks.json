@@ -1,0 +1,25 @@
+{
+  "$schema": "sap://networks.schema.json",
+  "_comment": "Bundled network config for SAP. If pharos-skill-engine is installed at the framework's skills root, its networks.json takes precedence. Edit values here to override or extend.",
+  "defaultNetwork": "mainnet",
+  "networks": {
+    "mainnet": {
+      "name": "Pharos Mainnet",
+      "chainId": 1672,
+      "nativeSymbol": "PROS",
+      "rpcUrl": "https://pharos.drpc.org",
+      "explorerUrl": "https://pharos.drpc.org",
+      "explorerAddressPath": "/address",
+      "explorerTxPath": "/tx"
+    },
+    "atlantic-testnet": {
+      "name": "Pharos Atlantic Testnet",
+      "chainId": 688689,
+      "nativeSymbol": "PHRS",
+      "rpcUrl": "https://atlantic.drpc.pharosnetwork.xyz",
+      "explorerUrl": "https://atlantic.pharosnetwork.xyz",
+      "explorerAddressPath": "/address",
+      "explorerTxPath": "/tx"
+    }
+  }
+}
