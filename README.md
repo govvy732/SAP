@@ -90,7 +90,7 @@ pkg install python -y
 Verify:
 
 ```bash
-python3 --version    # should print 3.10 or higher
+python --version     # should print 3.10 or higher
 ```
 
 ### 3. Clone and verify
@@ -98,7 +98,7 @@ python3 --version    # should print 3.10 or higher
 ```bash
 git clone https://github.com/govvy732/SAP.git
 cd SAP
-python3 scripts/portfolio.py --help
+python scripts/portfolio.py --help
 ```
 
 If `--help` prints the usage, the skill is installed. No additional Python packages are required — the orchestrator uses only the standard library.
